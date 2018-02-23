@@ -8,7 +8,7 @@
 #include "utilities.h"
 #include "lexerDef.h"
 
-#define MAX_BUFFER_SIZE 4
+#define MAX_BUFFER_SIZE 128
 
 unsigned long long lineNo = 1; // Current Line in the Source File
 char buffer1[MAX_BUFFER_SIZE]; // Input Buffer 1
@@ -18,6 +18,7 @@ int firstUse = 1; // First Time Use of Bufffers
 int bufferSize1, bufferSize2;
 int buff1Flag = 1; // Indicates whether to use Buffer 1 or not (Initially set to Yes)
 int buff2Flag = 0; // Indicates whether to use Buffer 2 or not (Initially set to No)
+int maxLengthCrossed; // Indicates whether lexeme has crossed maximum allowed length or not
 
 char getChar(FILE *fp)
 {
@@ -31,7 +32,7 @@ char getChar(FILE *fp)
         firstUse = 0;
     }
     if(bufferSize1 == 0 && bufferSize2 == 0)
-        exit(0); // EOF Reached
+        return '$'; // EOF Reached
     if(buff1Flag == 1)
     {
         if(bufferPos1 == bufferSize1)
@@ -79,12 +80,59 @@ void printToken(tokenInfo *t)
     char lexeme[21];
     strcpy(lexeme, t->lexeme);
     strcpy(tokenID,tokenRepr(t->tokenID));
-    if(strcmp(lexeme, "")!=0)
+    if(strcmp(lexeme, "")!=0 && maxLengthCrossed==0)
         printf("Line %llu: %s %s\n", t->lineNo, lexeme, tokenID);
-    else
-        printf("Line %llu: %s\n", t->lineNo, tokenID);
     return;
 }
+
+void removeComments(FILE *fp)
+{
+    char c;
+    int state = 1;
+    int newLineFlag = 0;
+    printf("Line %llu: ", lineNo);
+    while(true)
+    {
+        c = getChar(fp);
+        if(c=='$')
+            exit(0);
+        if(newLineFlag == 1)
+        {
+            newLineFlag = 0;
+            printf("Line %llu: ", lineNo);
+        }
+        switch(state)
+        {
+            case 1:
+                switch(c)
+                {
+                    case '\n':
+                        lineNo++;
+                        putchar(c);
+                        newLineFlag = 1;
+                        break;
+                    case '#':
+                        state = 2;
+                        break;
+                    default:
+                        putchar(c);
+                }
+                break;
+
+            case 2:
+                switch(c)
+                {
+                    case '\n':
+                        lineNo++;
+                        putchar(c);
+                        state = 1;
+                        newLineFlag = 1;
+                        break;
+                }
+                break;
+        }
+    }
+}    
 
 void getNextToken(FILE *fp, tokenInfo *t)
 {
@@ -92,13 +140,15 @@ void getNextToken(FILE *fp, tokenInfo *t)
 	char c;
 	int state = 1; // Start State
 	int lexemeInd = 0;
-    int maxLengthCrossed = 0;
+    maxLengthCrossed = 0;
 	while(true)
 	{
 		c = getChar(fp); // Stores the character
+        if(c=='$') // EOF
+            exit(0);
         t->lineNo = lineNo; // Updating the line number for the tokenInfo
         // Implementing the DFA using nested Switch Case statments
-        switch(state) 
+        switch(state)
         {
             case 1: // Start State
             	switch(c)
@@ -106,6 +156,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             		case '\n':
             			lineNo++;
             		case ' ':
+            		case '\r':
             		case '\t':
             			state = 1;
             			break;
@@ -179,6 +230,8 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         state = 10;
                     	break;
                     case '"':
+                        copyLexemeToToken(c, t, lexemeInd);
+                        lexemeInd++;
                     	state = 12;
                     	break;
                     case '0':
@@ -266,7 +319,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         lexemeInd++;
                     	break;
                     default:
-                        printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+                        printf("Line No.: %llu\tLexical Error!! Unknown Symbol <%c>\n", lineNo, c);
                     	return;
             	}
             	break;
@@ -304,7 +357,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			return;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -384,7 +437,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     	break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                    	printf("Illegal Character Encountered <%c> in state <%d>", c, state);
+                    	printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -454,8 +507,16 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     case '7':
                     case '8':
                     case '9':
-                    	copyLexemeToToken(c, t, lexemeInd);
-                        lexemeInd++;
+                    	if(maxLengthCrossed==0)
+                        {
+                            copyLexemeToToken(c, t, lexemeInd);
+                            lexemeInd++;
+                        }
+                        if(maxLengthCrossed==0 && lexemeInd > 20)
+                        {
+                            maxLengthCrossed = 1;
+                            printf("Line %llu: ERROR!! Max Length Crossed\n", lineNo);
+                        }
                     	state = 9;
                     	break;
                     default: // FUNCTION or MAIN Found
@@ -522,11 +583,16 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     case 'X':
                     case 'Y':
                     case 'Z':
-                    	copyLexemeToToken(c, t, lexemeInd);
-                        lexemeInd++;
-                        maxLengthCrossed = checkForMaxLength(t, lexemeInd, lineNo);
-                        if(maxLengthCrossed == 1)
-                            return;
+                    	if(maxLengthCrossed==0)
+                        {
+                            copyLexemeToToken(c, t, lexemeInd);
+                            lexemeInd++;
+                        }
+                        if(maxLengthCrossed==0 && lexemeInd > 20)
+                        {
+                            maxLengthCrossed = 1;
+                            printf("Line %llu: ERROR!! Max Length Crossed\n", lineNo);
+                        }
                     	state = 10;
                     	break;
                     case '0':
@@ -540,11 +606,16 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     case '8':
                     case '9':
                     	// ID Found
-                    	copyLexemeToToken(c, t, lexemeInd);
-                        lexemeInd++;
-                        maxLengthCrossed = checkForMaxLength(t, lexemeInd, lineNo);
-                        if(maxLengthCrossed == 1)
-                            return;
+                    	if(maxLengthCrossed==0)
+                        {
+                            copyLexemeToToken(c, t, lexemeInd);
+                            lexemeInd++;
+                        }
+                        if(maxLengthCrossed==0 && lexemeInd > 20)
+                        {
+                            maxLengthCrossed = 1;
+                            printf("Line %llu: ERROR!! Max Length Crossed\n", lineNo);
+                        }
                         t->lineNo = lineNo;
                     	t->tokenID = ID;
                     	checkForKeywords(t);
@@ -552,9 +623,6 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                     	decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        maxLengthCrossed = checkForMaxLength(t, lexemeInd, lineNo);
-                        if(maxLengthCrossed == 1)
-                            return;
                         t->lineNo = lineNo;
             			t->tokenID = ID;
             			checkForKeywords(t);
@@ -591,13 +659,14 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     case 'x':
                     case 'y':
                     case 'z':
+                    case ' ':
                     	copyLexemeToToken(c, t, lexemeInd);
                         lexemeInd++;
                     	state = 13;
                     	break;
                    	default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                   		printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+                   		printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -631,21 +700,37 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     case 'x':
                     case 'y':
                     case 'z':
-                    	copyLexemeToToken(c, t, lexemeInd);
-                        lexemeInd++;
+                    case ' ':
+                        if(maxLengthCrossed==0)
+                        {
+                    	    copyLexemeToToken(c, t, lexemeInd);
+                            lexemeInd++;
+                        }
+                        if(maxLengthCrossed==0 && lexemeInd > 20)
+                        {
+                            maxLengthCrossed = 1;
+                            printf("Line %llu: ERROR!! Max Length Crossed\n", lineNo);
+                        }
                     	state = 13;
                     	break;
                     case '"':
                     	// STR Found
-                    	maxLengthCrossed = checkForMaxLength(t, lexemeInd, lineNo);
-                        if(maxLengthCrossed == 1)
-                            return;
+                        if(maxLengthCrossed==0)
+                        {
+                            copyLexemeToToken(c, t, lexemeInd);
+                            lexemeInd++;
+                        }
+                    	if(maxLengthCrossed==0 && lexemeInd > 20)
+                        {
+                            maxLengthCrossed = 1;
+                            printf("Line %llu: ERROR!! Max Length Crossed\n", lineNo);
+                        }
                     	t->lineNo = lineNo;
                     	t->tokenID = STR;
                     	return;
                    	default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                   		printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                     	return;
             	}
             	break;
@@ -704,13 +789,14 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     	// The tokenInfo found before this was NUM;
                     	decrementBuffer();
                         decrementBuffer();
+                        t->lexeme[lexemeInd-1] = '\0';
                     	state = 1;
                     	t->lineNo = lineNo;
                     	t->tokenID = NUM;
                     	return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                    	printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+                    	printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -736,7 +822,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     	return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                    	printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+                    	printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -761,7 +847,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -776,7 +862,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -791,7 +877,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -808,7 +894,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			return;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -823,7 +909,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -840,7 +926,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			return;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -855,7 +941,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -870,7 +956,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			break;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -887,7 +973,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			return;
             		default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-            			printf("Illegal Character Encountered <%c> in state <%d>\n", c, state);
+            			printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s>\n", lineNo, t->lexeme);
                     	return;
             	}
             	break;
@@ -930,6 +1016,77 @@ void getNextToken(FILE *fp, tokenInfo *t)
             			return;
             	}
             	break;
+
+            case 45:
+                switch(c)
+                {
+                    case 'a':
+                    case 'b':
+                    case 'c':
+                    case 'd':
+                    case 'e':
+                    case 'f':
+                    case 'g':
+                    case 'h':
+                    case 'i':
+                    case 'j':
+                    case 'k':
+                    case 'l':
+                    case 'm':
+                    case 'n':
+                    case 'o':
+                    case 'p':
+                    case 'q':
+                    case 'r':
+                    case 's':
+                    case 't':
+                    case 'u':
+                    case 'v':
+                    case 'w':
+                    case 'x':
+                    case 'y':
+                    case 'z':
+                    case 'A':
+                    case 'B':
+                    case 'C':
+                    case 'D':
+                    case 'E':
+                    case 'F':
+                    case 'G':
+                    case 'H':
+                    case 'I':
+                    case 'J':
+                    case 'K':
+                    case 'L':
+                    case 'M':
+                    case 'N':
+                    case 'O':
+                    case 'P':
+                    case 'Q':
+                    case 'R':
+                    case 'S':
+                    case 'T':
+                    case 'U':
+                    case 'V':
+                    case 'W':
+                    case 'X':
+                    case 'Y':
+                    case 'Z':
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        continue;
+                    default:
+                        decrementBuffer();
+                        state = 1;
+                }
         }
 	}
 }

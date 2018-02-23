@@ -47,14 +47,15 @@ char* tokenRepr(int id)
     if(id == GT) return "GT";
     if(id == GE) return "GE";
     if(id == NE) return "NE";
-    if(id == ERR) return "ERR";
+    if(id == EPSILON) return "EPSILON";
+    if(id==EOF) return "EOF";
 }
 
-int checkForMaxLength(tokenInfo *t, int ind, int lineNo)
+int checkForMaxLength(tokenInfo *t, int ind, long long int lineNo)
 {
     if(ind > 20)
     {
-        printf("ERROR!! Length cannot be more than 20\t");
+        printf("Line No.: %llu\tLexical ERROR!! Identifier is longer than the prescribed length (20)\n", lineNo);
         t->lineNo = lineNo;
         t->tokenID = ERR;
         return 1;

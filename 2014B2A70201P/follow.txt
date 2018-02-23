@@ -1,0 +1,44 @@
+<mainFunction> ===> EOF
+<stmtsAndFunctionDefs> ===> END
+<safdLF> ===> END
+<stmtOrFunctionDef> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID FUNCTION END
+<stmt> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<functionDef> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID FUNCTION END
+<parameter_list> ===> SQC
+<type> ===> ID
+<remainingList> ===> SQC
+<declarationStmt> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<var_list> ===> SEMICOLON SQC
+<more_ids> ===> SEMICOLON SQC
+<assignmentStmt_type1> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<assignmentStmt_type2> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<leftHandSide_singleVar> ===> ASSIGNOP
+<leftHandSide_listVar> ===> ASSIGNOP
+<rightHandSide_type1> ===> SEMICOLON
+<rightHandSide_type2> ===> SEMICOLON
+<sizeExpression> ===> SEMICOLON
+<ifStmt> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<ifStmtLF> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<otherStmts> ===> ELSE ENDIF
+<ioStmt> ===> END INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID ELSE ENDIF
+<funCallStmt> ===> SEMICOLON
+<inputParameterList> ===> CL
+<listVar> ===> CL
+<arithmeticExpression> ===> SEMICOLON CL
+<aeLF> ===> SEMICOLON CL
+<arithmeticTerm> ===> PLUS MINUS SEMICOLON CL
+<atLF> ===> PLUS MINUS SEMICOLON CL
+<factor> ===> MUL DIV PLUS MINUS SEMICOLON CL
+<operator_lowPrecedence> ===> OP ID NUM RNUM STR SQO
+<operator_highPrecedence> ===> OP ID NUM RNUM STR SQO
+<booleanExpression> ===> CL
+<constrainedVars> ===> LT LE EQ GT GE NE CL
+<var> ===> COMMA CL MUL DIV PLUS MINUS SEMICOLON
+<matrix> ===> COMMA CL MUL DIV PLUS MINUS SEMICOLON
+<rows> ===> SQC
+<rowsLF> ===> SQC
+<row> ===> SEMICOLON SQC
+<remainingColElements> ===> SEMICOLON SQC
+<matrixElement> ===> COMMA CL MUL DIV PLUS MINUS SEMICOLON
+<logicalOp> ===> OP
+<relationalOp> ===> ID NUM RNUM

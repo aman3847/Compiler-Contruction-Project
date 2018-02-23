@@ -47,7 +47,8 @@ typedef enum
     GT,         // 36
     GE,         // 37
     NE,         // 38
-    ERR         // 39
+    EPSILON,    // 39
+    ERR         // 40
 } tokenClass;
 
 typedef struct tokenInfo

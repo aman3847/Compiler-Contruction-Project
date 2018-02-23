@@ -12,5 +12,6 @@ char getChar(FILE *fp);
 void printToken(tokenInfo *t);
 void getNextToken(FILE *fp, tokenInfo *t);
 void decrementBuffer();
+void removeComments(FILE *fp);
 
 #endif

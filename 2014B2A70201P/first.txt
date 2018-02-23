@@ -1,0 +1,44 @@
+<mainFunction> ===> MAIN
+<stmtsAndFunctionDefs> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID FUNCTION
+<safdLF> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID FUNCTION EPSILON
+<stmtOrFunctionDef> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID FUNCTION
+<stmt> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID
+<functionDef> ===> FUNCTION
+<parameter_list> ===> INT REAL STRING MATRIX
+<type> ===> INT REAL STRING MATRIX
+<remainingList> ===> COMMA EPSILON
+<declarationStmt> ===> INT REAL STRING MATRIX
+<var_list> ===> ID
+<more_ids> ===> COMMA EPSILON
+<assignmentStmt_type1> ===> ID
+<assignmentStmt_type2> ===> SQO
+<leftHandSide_singleVar> ===> ID
+<leftHandSide_listVar> ===> SQO
+<rightHandSide_type1> ===> OP ID NUM RNUM STR SQO SIZE FUNID
+<rightHandSide_type2> ===> SIZE FUNID
+<sizeExpression> ==> SIZE
+<ifStmt> ===> IF
+<ifStmtLF> ===> ELSE ENDIF
+<otherStmts> ===> INT REAL STRING MATRIX ID SQO IF READ PRINT FUNID EPSILON
+<ioStmt> ===> READ PRINT
+<funCallStmt> ===> FUNID
+<inputParameterList> ===> ID NUM RNUM STR SQO EPSILON
+<listVar> ===> COMMA EPSILON
+<arithmeticExpression> ===> OP ID NUM RNUM STR SQO
+<aeLF> ===> PLUS MINUS EPSILON
+<arithmeticTerm> ===> OP ID NUM RNUM STR SQO
+<atLF> ===> MUL DIV EPSILON
+<factor> ===> OP ID NUM RNUM STR SQO
+<operator_lowPrecedence> ===> PLUS MINUS
+<operator_highPrecedence> ===> MUL DIV
+<booleanExpression> ===> OP ID NUM RNUM NOT
+<constrainedVars> ===> ID NUM RNUM
+<var> ===> ID NUM RNUM STR SQO
+<matrix> ===> SQO
+<rows> ===> NUM
+<rowsLF> ===> SEMICOLON EPSILON
+<row> ===> NUM
+<remainingColElements> ===> COMMA EPSILON
+<matrixElement>  ===> SQO EPSILON
+<logicalOp> ===> AND OR
+<relationalOp> ===> LT LE EQ GT GE NE
