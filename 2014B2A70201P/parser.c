@@ -4,11 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define NO_OF_RULES 86
 #define NO_OF_TERMINALS 38
 #define NO_OF_NON_TERMINALS 44
-#define START_INDEX_OF_NT 39
+#define START_INDEX_OF_NT 40
 
 /*typedef enum
 {
@@ -142,6 +143,7 @@ typedef enum
     GE,         // 36
     NE,         // 37
     ENDOFFILE,  // 38
+    EPSILON,	// 39
 	mainFunction,
 	stmtsAndFunctionDefs,
 	safdLF,
@@ -185,8 +187,7 @@ typedef enum
 	remainingColElements,
 	matrixElement,
 	logicalOp,
-	relationalOp,
-	EPSILON
+	relationalOp
 } element;
 
 /*terminal reprTerminal(char *t) 
@@ -535,7 +536,7 @@ element stringToEnum(char* id)
 		return -1;
 }
 
-char* enumString[] = {"ASSIGNOP", "FUNID", "ID", "NUM", "RNUM", "STR", "END", "INT", "REAL", "STRING", "MATRIX", "MAIN", "SQO", "SQC", "OP", "CL", "SEMICOLON", "COMMA", "IF", "ELSE", "ENDIF", "READ", "PRINT", "FUNCTION", "PLUS", "MINUS", "MUL", "DIV", "SIZE", "AND", "OR", "NOT", "LT", "LE", "EQ", "GT", "GE", "NE", "ENDOFFILE", "mainFunction", "stmtsAndFunctionDefs", "safdLF", "stmtOrFunctionDef", "stmt", "functionDef", "parameter_list", "type", "remainingList", "declarationStmt", "var_list", "more_ids", "assignmentStmt_type1", "assignmentStmt_type2", "leftHandSide_singleVar", "leftHandSide_listVar", "rightHandSide_type1", "rightHandSide_type2", "sizeExpression", "ifStmt", "ifStmtLF", "otherStmts", "ioStmt", "funCallStmt", "inputParameterList", "listVar", "arithmeticExpression", "aeLF", "arithmeticTerm", "atLF", "factor", "operator_lowPrecedence", "operator_highPrecedence", "booleanExpression", "constrainedVars", "var", "matrix", "rows", "rowsLF", "row", "remainingColElements", "matrixElement", "logicalOp", "relationalOp", "EPSILON"};
+char* enumString[] = {"ASSIGNOP", "FUNID", "ID", "NUM", "RNUM", "STR", "END", "INT", "REAL", "STRING", "MATRIX", "MAIN", "SQO", "SQC", "OP", "CL", "SEMICOLON", "COMMA", "IF", "ELSE", "ENDIF", "READ", "PRINT", "FUNCTION", "PLUS", "MINUS", "MUL", "DIV", "SIZE", "AND", "OR", "NOT", "LT", "LE", "EQ", "GT", "GE", "NE", "ENDOFFILE", "EPSILON", "mainFunction", "stmtsAndFunctionDefs", "safdLF", "stmtOrFunctionDef", "stmt", "functionDef", "parameter_list", "type", "remainingList", "declarationStmt", "var_list", "more_ids", "assignmentStmt_type1", "assignmentStmt_type2", "leftHandSide_singleVar", "leftHandSide_listVar", "rightHandSide_type1", "rightHandSide_type2", "sizeExpression", "ifStmt", "ifStmtLF", "otherStmts", "ioStmt", "funCallStmt", "inputParameterList", "listVar", "arithmeticExpression", "aeLF", "arithmeticTerm", "atLF", "factor", "operator_lowPrecedence", "operator_highPrecedence", "booleanExpression", "constrainedVars", "var", "matrix", "rows", "rowsLF", "row", "remainingColElements", "matrixElement", "logicalOp", "relationalOp"};
 
 char* enumToString(element id)
 {
@@ -768,6 +769,128 @@ void printParseTable()
 	}
 }
 
+typedef struct stackNode
+{
+	element id;
+	struct stackNode* next;
+} stackNode;
+
+typedef struct stack
+{
+	stackNode* top;
+	// unsigned int capacity;
+} stack;
+
+stackNode* createStackNode(element id)
+{
+	stackNode* temp = (stackNode*)malloc(sizeof(stackNode));
+	temp->id = id;
+	temp->next = NULL;
+	return temp;
+}
+
+stack* initializeStack()
+{
+	stack* temp = (stack*)malloc(sizeof(stack));
+	temp->top = NULL;
+	return temp;
+}
+
+bool isEmpty(stack* stack)
+{
+	if(stack->top==NULL)
+		return true;
+	else
+		return false;
+}
+
+void push(stack* stack, stackNode* node)
+{
+	if(isEmpty(stack))
+	{
+		stack->top = node;
+	}
+	else
+	{
+		node->next = stack->top;
+		stack->top = node;
+	}
+	return;
+}
+
+int pop(stack* stack)
+{
+	stackNode* temp = stack->top;
+	if(isEmpty(stack))
+	{
+		return -1;
+	}
+	else
+	{
+		stack->top = stack->top->next;
+		free(temp);
+		return 1;
+	}
+}
+
+element top(stack* stack)
+{
+	if(isEmpty(stack))
+		return -1;
+	else
+		return stack->top->id;
+}
+
+void reverseStack(stack* mainStack, stack* auxStack)
+{
+	stackNode* temp;
+	element ele;
+	while(!isEmpty(auxStack))
+	{
+		ele = top(auxStack);
+		temp = createStackNode(ele);
+		push(mainStack, temp);
+		pop(auxStack);
+	}
+	return;
+}
+
+void printStack(stack* stack)
+{
+	element ele;
+	while(!isEmpty(stack))
+	{
+		ele = top(stack);
+		printf("%s\n", enumToString(ele));
+		pop(stack);
+	}
+	return;
+}
+
+void testStackFunctionalities()
+{
+	stack* auxStack = initializeStack(auxStack);
+	stackNode* node1 = createStackNode(MAIN);
+	stackNode* node2 = createStackNode(SQO);
+	stackNode* node3 = createStackNode(SQC);
+	stackNode* node4 = createStackNode(stmtsAndFunctionDefs);
+	stackNode* node5 = createStackNode(END);
+	push(auxStack, node1);
+	push(auxStack, node2);
+	push(auxStack, node3);
+	push(auxStack, node4);
+	push(auxStack, node5);
+	element ele;
+	int flag;
+	// printf("Aux Stack");
+	// printStack(auxStack);
+	stack* mainStack = initializeStack(mainStack);
+	reverseStack(mainStack, auxStack);
+	printf("Reversed Stack\n");
+	printStack(mainStack);
+	return;
+}
+
 int main()
 {
 	readGrammar("modifiedGrammar.txt");
@@ -778,6 +901,7 @@ int main()
 	// printFirstAndFollow();
 	initializeParseTable();
 	createParseTable();
-	printParseTable();
+	// printParseTable();
+	testStackFunctionalities();
 	return 0;
 }
