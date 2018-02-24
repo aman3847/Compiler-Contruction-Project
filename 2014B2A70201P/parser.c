@@ -8,6 +8,7 @@
 #define NO_OF_RULES 86
 #define NO_OF_TERMINALS 38
 #define NO_OF_NON_TERMINALS 44
+#define START_INDEX_OF_NT 39
 
 typedef enum
 {
@@ -308,6 +309,7 @@ void readGrammar(char *filename)
 	int i = 0;
 	lexeme *temp, *temp2;
 	char *token;
+	int len;
 	while(fgets(str, 256, fp)!=NULL)
 	{
 		int s = strlen(str);
@@ -316,6 +318,9 @@ void readGrammar(char *filename)
 		// printf("token = %s\n", token);
 		temp = getLexeme(token);
 		grammar[i].head = temp;
+		len = strlen(temp->id);
+		if(temp->id[len-1]=='\n')
+			temp->id[len-1] = '\0';
 		token = strtok(NULL, delimiter); // ===>
 		// printf("token = %s\n", token);
 		token = strtok(NULL, delimiter);
@@ -323,6 +328,9 @@ void readGrammar(char *filename)
 		while(token!=NULL)
 		{
 			temp2 = getLexeme(token);
+			len = strlen(temp2->id);
+			if(temp2->id[len-1]=='\n')
+				temp2->id[len-1] = '\0';
 			temp->next = temp2;
 			temp = temp2;
 			token = strtok(NULL, delimiter);
@@ -436,15 +444,47 @@ void createParseTable()
 		// printf("first %s\n", firstAndFollow[i].head->id);
 		// printf("rhs = %d\n",reprTerminal(firstAndFollow[0].head->id));
 		temp = &grammar[i];
-		parseTable[lhs-39][rhs] = temp;
+		parseTable[lhs-START_INDEX_OF_NT][rhs] = temp;
 		while(t->next!=NULL)
 		{
 			t = t->next;
 			rhs = reprTerminal(t->id);
-			parseTable[lhs-39][rhs] = temp;
+			parseTable[lhs-START_INDEX_OF_NT][rhs] = temp;
 		}
 	}
 	return;
+}
+
+void initializeParseTable()
+{
+	for(int i=0; i<NO_OF_NON_TERMINALS; i++)
+	{
+		for(int j=0; j<NO_OF_TERMINALS+1; j++)
+			parseTable[i][j] = NULL;
+	}
+}
+
+void printParseTable()
+{
+	rule* temp;
+	for(int i=0; i<NO_OF_NON_TERMINALS; i++)
+	{
+		printf("\nNon-Terminal - %d\n", START_INDEX_OF_NT+i);
+		for(int j=0; j<NO_OF_TERMINALS+1; j++)
+		{
+			temp = parseTable[i][j];
+			if(temp!=NULL)
+			{
+				printf("%s ",temp->head->next->id);
+				// printf("%s ",temp->head->id);
+			}
+			else
+			{
+				printf("NULL ");
+			}
+		}
+		// printf("\n\n\n");
+	}
 }
 
 int main()
@@ -455,6 +495,8 @@ int main()
 	// printf("\n\nPRINTING FIRST AND FOLLOW\n");
 	createFirstAndFollow("firstAndFollow.txt");
 	// printFirstAndFollow();
+	initializeParseTable();
 	createParseTable();
+	printParseTable();
 	return 0;
 }
