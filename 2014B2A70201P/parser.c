@@ -54,7 +54,7 @@ typedef enum
 
 typedef enum
 {
-    mainFunction,
+    mainFunction = 39,
 	stmtsAndFunctionDefs,
 	safdLF,
 	stmtOrFunctionDef,
@@ -436,12 +436,12 @@ void createParseTable()
 		// printf("first %s\n", firstAndFollow[i].head->id);
 		// printf("rhs = %d\n",reprTerminal(firstAndFollow[0].head->id));
 		temp = &grammar[i];
-		parseTable[lhs][rhs] = temp;
+		parseTable[lhs-39][rhs] = temp;
 		while(t->next!=NULL)
 		{
 			t = t->next;
 			rhs = reprTerminal(t->id);
-			parseTable[lhs][rhs] = temp;
+			parseTable[lhs-39][rhs] = temp;
 		}
 	}
 	return;
