@@ -1,8 +1,8 @@
 mainFunction ===> MAIN SQO SQC stmtsAndFunctionDefs END
 stmtsAndFunctionDefs ===> stmtOrFunctionDef safdLF
-safdLF ===> stmtAndFunctionDefs
+safdLF ===> stmtsAndFunctionDefs
 safdLF ===> EPSILON
-stmtOrFunctionDef ===> stmt 
+stmtOrFunctionDef ===> stmt
 stmtOrFunctionDef ===> functionDef
 stmt ===> declarationStmt
 stmt ===> assignmentStmt_type1
