@@ -8,7 +8,7 @@
 
 char* tokenRepr(int id);
 int checkForMaxLength(tokenInfo *t, int ind, int lineNo);
-void checkForKeywords(tokenInfo *t);
+// void checkForKeywords(tokenInfo *t);
 void copyLexemeToToken(char c, tokenInfo* t, int ind);
 
 #endif

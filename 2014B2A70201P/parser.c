@@ -902,6 +902,6 @@ int main()
 	initializeParseTable();
 	createParseTable();
 	// printParseTable();
-	testStackFunctionalities();
+	// testStackFunctionalities();
 	return 0;
 }

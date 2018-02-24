@@ -64,7 +64,7 @@ int checkForMaxLength(tokenInfo *t, int ind, long long int lineNo)
         return 0;
 }
 
-void checkForKeywords(tokenInfo *t)
+/*void checkForKeywords(tokenInfo *t)
 {
     if(strcmp(t->lexeme,"_main")==0)
     {
@@ -131,7 +131,7 @@ void checkForKeywords(tokenInfo *t)
         else
             return;
     }
-}
+}*/
 
 void copyLexemeToToken(char c, tokenInfo* t, int ind)
 {

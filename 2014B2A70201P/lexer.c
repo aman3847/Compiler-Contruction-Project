@@ -134,6 +134,80 @@ void removeComments(FILE *fp)
     }
 }    
 
+int getKey(char* lexeme)
+{
+    int key = 0;
+    int i;
+    for(i=0; i<strlen(lexeme); i++)
+        key += lexeme[i];
+    key = key%23;
+    // printf("lexeme = %s\n", lexeme);
+    // printf("key = %d\n", key);
+    return key;
+}
+
+int keyWords[] = {1,-1,-1,-1,-1,1,1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,-1,1,-1,1,-1};
+
+void checkForKeywords(int key, tokenInfo *t)
+{
+    if(keyWords[key]==-1)
+        return;
+    else
+    {
+        switch(key)
+        {
+            case 0:
+                if(strcmp("if",t->lexeme)==0)
+                    t->tokenID = IF;
+                break;
+            case 5: 
+                if(strcmp("print",t->lexeme)==0)
+                    t->tokenID = PRINT;
+                break;
+            case 6:
+                if(strcmp("real",t->lexeme)==0)
+                    t->tokenID = REAL;
+                break;
+            case 9:
+                if(strcmp("int",t->lexeme)==0)
+                    t->tokenID = INT;
+                break;
+            case 10:
+                if(strcmp("_main",t->lexeme)==0)
+                    t->tokenID = MAIN;
+                break;
+            case 11:
+                if(strcmp("else",t->lexeme)==0)
+                    t->tokenID = ELSE;
+                break;
+            case 12:
+                if(strcmp("end",t->lexeme)==0)
+                    t->tokenID = END;
+                else if(strcmp("endif",t->lexeme)==0)
+                    t->tokenID = ENDIF;
+                break;
+
+            case 17:
+                if(strcmp("matrix",t->lexeme)==0)
+                    t->tokenID = MATRIX;
+                break;
+            case 19:
+                if(strcmp("string",t->lexeme)==0)
+                    t->tokenID = STRING;
+                else if(strcmp("function",t->lexeme)==0)
+                    t->tokenID = FUNCTION;
+                break;
+            case 21:
+                if(strcmp("read",t->lexeme)==0)
+                    t->tokenID = READ;
+                break;
+            default:
+                break;
+        }
+        return;
+    }
+}
+
 void getNextToken(FILE *fp, tokenInfo *t)
 {
 	// Reads the file pointed to by fp and fetches the first matching tokenInfo
@@ -141,6 +215,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
 	int state = 1; // Start State
 	int lexemeInd = 0;
     maxLengthCrossed = 0;
+    int key = -1;
 	while(true)
 	{
 		c = getChar(fp); // Stores the character
@@ -523,7 +598,8 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     	decrementBuffer(); // // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
                     	t->tokenID = FUNCTION;
-                    	checkForKeywords(t);
+                        key = getKey(t->lexeme);
+                    	checkForKeywords(key, t);
                         return;
            		}
            		break;
@@ -618,14 +694,16 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         }
                         t->lineNo = lineNo;
                     	t->tokenID = ID;
-                    	checkForKeywords(t);
+                    	key = getKey(t->lexeme);
+                        checkForKeywords(key, t);
 
                         return;
                     default:
                     	decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
             			t->tokenID = ID;
-            			checkForKeywords(t);
+            			key = getKey(t->lexeme);
+                        checkForKeywords(key, t);
                         return;
             	}
             	break;
