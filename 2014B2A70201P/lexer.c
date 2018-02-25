@@ -20,6 +20,14 @@ int buff1Flag = 1; // Indicates whether to use Buffer 1 or not (Initially set to
 int buff2Flag = 0; // Indicates whether to use Buffer 2 or not (Initially set to No)
 int maxLengthCrossed; // Indicates whether lexeme has crossed maximum allowed length or not
 
+tokenInfo createToken()
+{
+    tokenInfo* temp = (tokenInfo*)malloc(sizeof(tokenInfo));
+    strcpy(temp->lexeme,"");
+    temp->tokenID = ERR;
+    return temp;
+}
+
 char getChar(FILE *fp)
 {
     if(firstUse == 1) 

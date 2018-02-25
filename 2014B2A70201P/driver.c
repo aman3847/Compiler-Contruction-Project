@@ -10,6 +10,8 @@
 #include "lexer.h"
 #endif
 
+
+
 int main(int argc, char* argv[])
 // int main()
 {
@@ -25,11 +27,13 @@ int main(int argc, char* argv[])
         removeComments(fp);
     else if(opt==2)
     {
-        tokenInfo* newToken = (tokenInfo*)malloc(sizeof(tokenInfo));
+        tokenInfo* newToken;
+        // tokenInfo* newToken = (tokenInfo*)malloc(sizeof(tokenInfo));
         while(true)
         {
-            strcpy(newToken->lexeme,"");
-            newToken->tokenID = ERR;
+            newToken = createToken();
+            // strcpy(newToken->lexeme,"");
+            // newToken->tokenID = ERR;
             getNextToken(fp,newToken);
             if(newToken->tokenID!=ERR)
                 printToken(newToken);

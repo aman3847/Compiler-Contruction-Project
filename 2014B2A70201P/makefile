@@ -2,7 +2,7 @@
 # ID: 2014B2A70201P
 
 all: driver.o utilities.o lexer.o
-	gcc -o compiler driver.c utilities.c lexer.c 
+	gcc -o stage1exe driver.c utilities.c lexer.c 
 	rm *.o
 
 driver.o: driver.c
@@ -15,4 +15,4 @@ lexer.o: lexer.c
 	gcc -c lexer.c
 
 clean:
-	rm compiler
+	rm stage1exe

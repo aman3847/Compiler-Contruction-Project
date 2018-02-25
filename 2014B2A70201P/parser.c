@@ -760,10 +760,10 @@ void printParseTable()
 				printf("%s ",enumToString(temp->id));
 				// printf("%s ",temp->head->id);
 			}
-			else
-			{
-				printf("NULL ");
-			}
+			// else
+			// {
+				// printf("NULL ");
+			// }
 		}
 		printf("\n\n");
 	}
@@ -867,7 +867,7 @@ void printStack(stack* stack)
 	return;
 }
 
-void testStackFunctionalities()
+/*void testStackFunctionalities()
 {
 	stack* auxStack = initializeStack(auxStack);
 	stackNode* node1 = createStackNode(MAIN);
@@ -888,6 +888,71 @@ void testStackFunctionalities()
 	reverseStack(mainStack, auxStack);
 	printf("Reversed Stack\n");
 	printStack(mainStack);
+	return;
+}*/
+
+typedef struct tree
+{
+	tokenInfo* token;
+	struct tree* parent;
+	struct tree* firstChild;
+	struct tree* nextSibling;
+} tree;
+
+tree* createTreeNode(tokenInfo* token)
+{
+	tree* temp = (tree*)malloc(sizeof(tree));
+	temp->token = token;
+	temp->parent = NULL;
+	temp->firstChild = NULL;
+	temp->nextSibling = NULL;
+	return temp;
+}
+
+void insertTreeNode(tree* root, tree* node)
+{
+	tree* temp;
+	if(root==NULL)
+		root = node;
+	else if(root->firstChild==NULL)
+	{
+		root->firstChild = node;
+		node->parent = root;
+	}
+	else if(root->firstChild->nextSibling==NULL)
+	{
+		root->firstChild->nextSibling = node;
+		node->parent = root;
+	}
+	else
+	{
+		temp = root->firstChild->nextSibling;
+		while(temp->nextSibling!=NULL)
+			temp = temp->nextSibling;
+		temp->nextSibling = node;
+		node->parent = root;
+	}
+	return;
+}
+
+void visit(tree* node)
+{
+	printf("%s\n", tokenRepr(node->token->tokenID));
+	return;
+}
+
+void inOrderTraversal(tree* root)
+{
+	if(root==NULL)
+		return;
+	inOrderTraversal(root->firstChild);
+	visit(root);
+	tree* temp2 = root->firstChild;
+	while(temp2!=NULL)
+	{
+		temp2 = temp2->nextSibling;
+		inOrderTraversal(temp2);
+	}
 	return;
 }
 
