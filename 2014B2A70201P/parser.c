@@ -861,7 +861,7 @@ void parseInputSourceCode(FILE* fp)
     		}
     		else
     		{
-    			printf("Rule does not exist\n");
+    			printf("<%s> is not present in first set (follow set too in case first set is EPSILON) of <%s> thus no corresponding rule exists.", enumToString(newToken->tokenID), enumToString(top(mainStack)));
     			// exit(0);
     			return;
     		}
@@ -928,13 +928,14 @@ void parseInputSourceCode(FILE* fp)
     			// printf("topOfStack = %s\n", enumToString(topOfStack));
     			// printf("newToken->id = %s\n", enumToString(newToken->tokenID));
     			printf("Top of Stack and Lookahead do not match\n");
+    			printf("Symbol on top of stack <%s> does not match with Lookahead symbol <%s>", enumToString(top(mainStack)), enumToString(newToken->tokenID));
     			// exit(0);
     			return;
     		}
     	}
     	else if(topOfStack == DOLLAR)
     	{
-    		printf("Stack empty, content in file still needs to be read\n");
+    		printf("top of stack is DOLLAR but there is content in file still remaining to be read\n");
     		// exit(0);
     		return;
     	}
@@ -944,7 +945,7 @@ void parseInputSourceCode(FILE* fp)
     {
     	// printStack(mainStack);
     	// printf("topOfStack = %s\n", enumToString(topOfStack));
-    	printf("File completely read but stack is empty\n");
+    	printf("End of File reached but top of stack is not DOLLAR (Stack is not empty)\n");
     	// exit(0);
     	return;
     }
