@@ -35,5 +35,6 @@ void visit(tree* node);
 void inOrderTraversal(tree* root);
 void testNAryTreeFunctionalities();
 void parseInputSourceCode(FILE* fp);
+void parser(FILE* fp);
 
 #endif
