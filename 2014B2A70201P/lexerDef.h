@@ -5,6 +5,7 @@
 #define LEXERDEF
 
 # define MAX_LEXEME_SIZE 50
+# define START_INDEX_OF_NT 42
 
 typedef enum
 {
@@ -48,13 +49,62 @@ typedef enum
     GE,         // 37
     NE,         // 38
     EPSILON,    // 39
-    ERR         // 40
+    ERR,        // 40
+    DOLLAR      // 41
 } tokenClass;
+
+typedef enum
+{
+    mainFunction = START_INDEX_OF_NT,
+    stmtsAndFunctionDefs,
+    safdLF,
+    stmtOrFunctionDef,
+    stmt,
+    functionDef,
+    parameter_list,
+    type,
+    remainingList,
+    declarationStmt,
+    var_list,
+    more_ids,
+    assignmentStmt_type1,
+    assignmentStmt_type2,
+    leftHandSide_singleVar,
+    leftHandSide_listVar,
+    rightHandSide_type1,
+    rightHandSide_type2,
+    sizeExpression,
+    ifStmt,
+    ifStmtLF,
+    otherStmts,
+    ioStmt,
+    funCallStmt,
+    inputParameterList,
+    listVar,
+    arithmeticExpression,
+    aeLF,
+    arithmeticTerm,
+    atLF,
+    factor,
+    operator_lowPrecedence,
+    operator_highPrecedence,
+    booleanExpression,
+    constrainedVars,
+    var,
+    matrix,
+    rows,
+    rowsLF,
+    row,
+    remainingColElements,
+    matrixElement,
+    logicalOp,
+    relationalOp
+} nonTerminal;
 
 typedef struct tokenInfo
 {
     char lexeme[MAX_LEXEME_SIZE];
-    tokenClass tokenID;
+    int tokenID;
     unsigned long long lineNo;
 } tokenInfo;
 

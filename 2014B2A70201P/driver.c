@@ -5,12 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifndef LEXER
 #include "lexer.h"
-#endif
-
-
+#include "parser.h"
 
 int main(int argc, char* argv[])
 // int main()
@@ -27,15 +23,17 @@ int main(int argc, char* argv[])
         removeComments(fp);
     else if(opt==2)
     {
-        tokenInfo* newToken;
-        // tokenInfo* newToken = (tokenInfo*)malloc(sizeof(tokenInfo));
+        // tokenInfo* newToken;
+        tokenInfo* newToken = (tokenInfo*)malloc(sizeof(tokenInfo));
         while(true)
         {
-            newToken = createToken();
-            // strcpy(newToken->lexeme,"");
-            // newToken->tokenID = ERR;
+            // newToken = createToken();
+            strcpy(newToken->lexeme,"");
+            newToken->tokenID = ERR;
             getNextToken(fp,newToken);
-            if(newToken->tokenID!=ERR)
+            if(newToken->tokenID==DOLLAR)
+                exit(0);
+            else if(newToken->tokenID!=ERR)
                 printToken(newToken);
         }
     }
