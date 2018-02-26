@@ -5,9 +5,6 @@ all: lexer.o parser.o
 	gcc -o stage1exe driver.c lexer.o parser.o
 	rm *.o
 
-# driver.o: driver.c
-	# gcc -c driver.c
-
 lexer.o: lexer.c
 	gcc -c lexer.c
 

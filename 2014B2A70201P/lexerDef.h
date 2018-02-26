@@ -5,7 +5,7 @@
 #define LEXERDEF
 
 # define MAX_LEXEME_SIZE 50
-# define START_INDEX_OF_NT 42
+# define START_INDEX_OF_NT 43
 
 typedef enum
 {
@@ -50,7 +50,8 @@ typedef enum
     NE,         // 38
     EPSILON,    // 39
     ERR,        // 40
-    DOLLAR      // 41
+    DOLLAR,     // 41
+    ROOT        // 42
 } tokenClass;
 
 typedef enum
@@ -99,6 +100,7 @@ typedef enum
     matrixElement,
     logicalOp,
     relationalOp
+
 } nonTerminal;
 
 typedef struct tokenInfo

@@ -7,7 +7,7 @@
 #define NO_OF_RULES 86
 #define NO_OF_TERMINALS 38
 #define NO_OF_NON_TERMINALS 44
-#define START_INDEX_OF_NT 42
+#define START_INDEX_OF_NT 43
 
 // Structure to store Terminal/Non-Terminal
 typedef struct lexeme

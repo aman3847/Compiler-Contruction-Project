@@ -4,22 +4,25 @@
 #ifndef PARSER
 #define PARSER
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <stdbool.h>
 #include "parserDef.h"
 
 int stringToEnum(char* id);
 char* enumToString(int id);
 lexeme* getLexeme(char* id);
+
 void readGrammar(char *filename);
 void createFirstAndFollow(char *filename);
 void printGrammar();
 void printFirstAndFollow();
+
 void createParseTable();
 void initializeParseTable();
 void printParseTable();
+
 stackNode* createStackNode(int id);
 stack* initializeStack();
 bool isEmpty(stack* stack);
@@ -29,12 +32,14 @@ int top(stack* stack);
 void reverseStack(stack* mainStack, stack* auxStack);
 void printStack(stack* stack);
 void testStackFunctionalities();
+
 tree* createTreeNode(tokenInfo* token);
 void insertTreeNode(tree* root, tree* node);
-void visit(tree* node);
-void inOrderTraversal(tree* root);
+void visit(tree* node, FILE* fp2);
 void testNAryTreeFunctionalities();
+
 void parseInputSourceCode(FILE* fp);
 void parser(FILE* fp);
+void copyDetails(tree* root, tokenInfo* token);
 
 #endif
