@@ -13,6 +13,12 @@ int main(int argc, char* argv[])
 {
     printf("(a) FIRST and FOLLOW set HARDCODED\n(c) Both lexical and syntax analysis modules implemented\n(e) Lexer workes correctly with all 5 test cases whereas Parser works correctly for testcases 2, 3, 4 & 5 only\n\n");
     FILE* fp = fopen(argv[1],"r");
+    if(fp==NULL)
+    {
+        printf("FILE NOT FOUND. TERMINATING!!\n");
+        exit(0);
+    }
+    FILE* fp2;
     // FILE* fp = fopen("temp.txt","r");
     int opt;
     // int opt = 2;
@@ -36,7 +42,7 @@ int main(int argc, char* argv[])
             strcpy(newToken->lexeme,"");
             newToken->tokenID = ERR;
             getNextToken(fp,newToken);
-            printf("%s\n", enumToString(newToken->tokenID));
+            // printf("%s\n", enumToString(newToken->tokenID));
             if(newToken->tokenID==DOLLAR)
                 exit(0);
             else if(newToken->tokenID!=ERR)
@@ -45,7 +51,15 @@ int main(int argc, char* argv[])
     }
     else if(opt==3)
     {
-        parser(fp);
+        FILE* fp2 = fopen(argv[2],"w");
+        createParseTree(fp,fp2);
+        fclose(fp2);
+    }
+    else if(opt==4)
+    {
+        FILE* fp2 = fopen(argv[2],"r");
+        printParseTree(fp2);
+        fclose(fp2);
     }
     else
         printf("Wrong Option Entered. TERMINATING!!\n");

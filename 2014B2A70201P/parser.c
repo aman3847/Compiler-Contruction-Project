@@ -994,7 +994,7 @@ void parseInputSourceCode(FILE* fp)
 
 // int main(int argc, char* argv[])
 // int main()
-void parser(FILE* fp)
+void createParseTree(FILE* fp, FILE* fp2)
 {
 	// FILE* fp = fopen("parseTest.txt","r");
 	// FILE* fp = fopen(argv[1],"r");
@@ -1013,13 +1013,20 @@ void parser(FILE* fp)
 	auxStack = initializeStack();
 	mainStack = initializeStack();
 	parseInputSourceCode(fp);
-	FILE* fp2 = fopen("parsetreeoutfile.txt","w");
+	// FILE* fp2 = fopen("parsetreeoutfile.txt","w");
 	// printf("Returned from parsing Function--------------------\n");
 	// fclose(fp);
 	// printf("Entering inOrderTraversal\n");
 	// printf("blah = %s\n", enumToString(parseTree->token->tokenID));
 	inOrderTraversal(parseTree, fp2);
-	fclose(fp2);
+	// fclose(fp2);
 	return;
 	// return 0;
+}
+
+void printParseTree(FILE* fp2)
+{
+	char c;
+	while((c=fgetc(fp2))!=EOF)
+		putchar(c);
 }

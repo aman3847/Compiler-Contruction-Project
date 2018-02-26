@@ -39,7 +39,8 @@ void visit(tree* node, FILE* fp2);
 void testNAryTreeFunctionalities();
 
 void parseInputSourceCode(FILE* fp);
-void parser(FILE* fp);
+void createParseTree(FILE* fp, FILE* fp2);
 void copyDetails(tree* root, tokenInfo* token);
+void printParseTree(FILE* fp2);
 
 #endif

@@ -13,3 +13,4 @@ parser.o: parser.c
 
 clean:
 	rm stage1exe
+	rm parsetreeoutfile.txt
