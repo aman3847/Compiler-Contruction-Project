@@ -11,7 +11,7 @@
 int main(int argc, char* argv[])
 // int main()
 {
-    printf("(a) FIRST and FOLLOW set HARDCODED\n(c) Both lexical and syntax analysis modules implemented\n(e) Lexer workes correctly with all 5 test cases whereas Parser works correctly for testcases 2, 3, 4 & 5 only\n\n");
+    printf("(a) FIRST and FOLLOW set HARDCODED\n(b) Both lexical and syntax analysis modules implemented\n(c) Lexer & Parser both work correctly for all 5 testcases\n(d) Error recovery implemented for Lexer\n(e) Modules compile and execute without Segmentation Fault on all given testcases.\n\n");
     FILE* fp = fopen(argv[1],"r");
     if(fp==NULL)
     {

@@ -17,145 +17,6 @@
     return temp;
 }*/
 
-
-/*typedef enum
-{
-	mainFunction = START_INDEX_OF_NT,
-	stmtsAndFunctionDefs,
-	safdLF,
-	stmtOrFunctionDef,
-	stmt,
-	functionDef,
-	parameter_list,
-	type,
-	remainingList,
-	declarationStmt,
-	var_list,
-	more_ids,
-	assignmentStmt_type1,
-	assignmentStmt_type2,
-	leftHandSide_singleVar,
-	leftHandSide_listVar,
-	rightHandSide_type1,
-	rightHandSide_type2,
-	sizeExpression,
-	ifStmt,
-	ifStmtLF,
-	otherStmts,
-	ioStmt,
-	funCallStmt,
-	inputParameterList,
-	listVar,
-	arithmeticExpression,
-	aeLF,
-	arithmeticTerm,
-	atLF,
-	factor,
-	operator_lowPrecedence,
-	operator_highPrecedence,
-	booleanExpression,
-	constrainedVars,
-	var,
-	matrix,
-	rows,
-	rowsLF,
-	row,
-	remainingColElements,
-	matrixElement,
-	logicalOp,
-	relationalOp
-} nonTerminal;*/
-
-/*char* tokenRepr(int id) 
-{
-    // Returns the Printable Representation of a tokenID
-    if(id == ASSIGNOP) return "ASSIGNOP";
-    else if(id == COMMENT) return "COMMENT";
-    else if(id == FUNID) return "FUNID";
-    else if(id == ID) return "ID";
-    else if(id == NUM) return "NUM";
-    else if(id == RNUM) return "RNUM";
-    else if(id == STR) return "STR";
-    else if(id == END) return "END";
-    else if(id == INT) return "INT";
-    else if(id == REAL) return "REAL";
-    else if(id == STRING) return "STRING";
-    else if(id == MATRIX) return "MATRIX";
-    else if(id == MAIN) return "MAIN";
-    else if(id == SQO) return "SQO";
-    else if(id == SQC) return "SQC";
-    else if(id == OP) return "OP";
-    else if(id == CL) return "CL";
-    else if(id == SEMICOLON) return "SEMICOLON";
-    else if(id == COMMA) return "COMMA";
-    else if(id == IF) return "IF";
-    else if(id == ELSE) return "ELSE";
-    else if(id == ENDIF) return "ENDIF";
-    else if(id == READ) return "READ";
-    else if(id == PRINT) return "PRINT";
-    else if(id == FUNCTION) return "FUNCTION";
-    else if(id == PLUS) return "PLUS";
-    else if(id == MINUS) return "MINUS";
-    else if(id == MUL) return "MUL";
-    else if(id == DIV) return "DIV";
-    else if(id == SIZE) return "SIZE";
-    else if(id == AND) return "AND";
-    else if(id == OR) return "OR";
-    else if(id == NOT) return "NOT";
-    else if(id == LT) return "LT";
-    else if(id == LE) return "LE";
-    else if(id == EQ) return "EQ";
-    else if(id == GT) return "GT";
-    else if(id == GE) return "GE";
-    else if(id == NE) return "NE";
-    else if(id == EPSILON) return "EPSILON";
-    else if(id == ERR) return "ERR";
-    else if(id == mainFunction) return "mainFunction";
-    else if(id == stmtsAndFunctionDefs) return "stmtsAndFunctionDefs";
-	else if(id == safdLF) return "safdLF";
-	else if(id == stmtOrFunctionDef) return "stmtOrFunctionDef";
-	else if(id == stmt) return "stmt";
-	else if(id == functionDef) return "functionDef";
-	else if(id == parameter_list) return "parameter_list";
-	else if(id == type) return "type";
-	else if(id == remainingList) return "remainingList";
-	else if(id == declarationStmt) return "declarationStmt";
-	else if(id == var_list) return "var_list";
-	else if(id == more_ids) return "more_ids";
-	else if(id == assignmentStmt_type1) return "assignmentStmt_type1";
-	else if(id == assignmentStmt_type2) return "assignmentStmt_type2";
-	else if(id == leftHandSide_singleVar) return "leftHandSide_singleVar";
-	else if(id == leftHandSide_listVar) return "leftHandSide_listVar";
-	else if(id == rightHandSide_type1) return "rightHandSide_type1";
-	else if(id == rightHandSide_type2) return "rightHandSide_type2";
-	else if(id == sizeExpression) return "sizeExpression";
-	else if(id == ifStmt) return "ifStmt";
-	else if(id == ifStmtLF) return "ifStmtLF";
-	else if(id == otherStmts) return "otherStmts";
-	else if(id == ioStmt) return "ioStmt";
-	else if(id == funCallStmt) return "funCallStmt";
-	else if(id == inputParameterList) return "inputParameterList";
-	else if(id == listVar) return "listVar";
-	else if(id == arithmeticExpression) return "arithmeticExpression";
-	else if(id == aeLF) return "aeLF";
-	else if(id == arithmeticTerm) return "arithmeticTerm";
-	else if(id == atLF) return "atLF";
-	else if(id == factor) return "factor";
-	else if(id == operator_lowPrecedence) return "operator_lowPrecedence";
-	else if(id == operator_highPrecedence) return "operator_highPrecedence";
-	else if(id == booleanExpression) return "booleanExpression";
-	else if(id == constrainedVars) return "constrainedVars";
-	else if(id == var) return "var";
-	else if(id == matrix) return "matrix";
-	else if(id == rows) return "rows";
-	else if(id == rowsLF) return "rowsLF";
-	else if(id == row) return "row";
-	else if(id == remainingColElements) return "remainingColElements";
-	else if(id == matrixElement) return "matrixElement";
-	else if(id == logicalOp) return "logicalOp";
-	else if(id == relationalOp) return "relationalOp";
-}*/
-
 int stringToEnum(char* id)
 {
 	if(strcmp("ASSIGNOP",id)==0)
@@ -742,29 +603,28 @@ void visit(tree* node, FILE* fp2)
 	// lexemeCurrentNode  lineno token valueIfNumber parentNodeSymbol isLeafNode(yes/no) NodeSymbol
 	
 	// lexemeCurrentNode
-	if(node->token->tokenID < 40)
+	if(node->token->tokenID < 40) // Terminal
 		fprintf(fp2,"%-20s", node->token->lexeme);
 	else
 		fprintf(fp2,"%-20s","----");
 
 	// lineNo
-	if(node->token->tokenID < 40)
+	if(node->token->tokenID < 40 && node->token->tokenID!=EPSILON) // Terminal & Not Epsilon
 		fprintf(fp2,"%-20llu", node->token->lineNo);
 	else
 		fprintf(fp2,"%-20s", "----");
 
 	// token
-	if(node->token->tokenID >= START_INDEX_OF_NT)
+	if(node->token->tokenID >= START_INDEX_OF_NT) // Non-terminal
 	{
-		// fprintf(fp2,"%-20s","<");
-		fprintf(fp2,"%-30s", enumToString(node->token->tokenID));
-		// fprintf(fp2,"%-20s",">");	
+		// fprintf(fp2,"%-30s", enumToString2(node->token->tokenID));
+		fprintf(fp2,"%-30s", "----");
 	}
 	else
-		fprintf(fp2,"%-30s", enumToString(node->token->tokenID));
+		fprintf(fp2,"%-30s", enumToString2(node->token->tokenID));
 
 	// valueIfNumber
-	if(node->token->tokenID == NUM || node->token->tokenID == RNUM)
+	if(node->token->tokenID == NUM || node->token->tokenID == RNUM) // NUM or RNUM
 		fprintf(fp2,"%-20s",node->token->lexeme);
 	else
 		fprintf(fp2,"%-20s","----");
@@ -772,28 +632,24 @@ void visit(tree* node, FILE* fp2)
 	// parentNodeSymbol
 	if(node->parent!=NULL)
 	{
-		// fprintf(fp2,"%-20s","<");
-		fprintf(fp2,"%-30s", enumToString(node->parent->token->tokenID));
-		// fprintf(fp2,"%-20s",">");
+		fprintf(fp2,"%-30s", enumToString2(node->parent->token->tokenID));
 	}
 	else
 		fprintf(fp2,"%-30s","ROOT");
 
 	// isLeafNode(yes/no)
-	if(node->token->tokenID < 40)
+	if(node->token->tokenID < 40) // Terminal
 		fprintf(fp2,"%-20s","yes");
 	else
 		fprintf(fp2,"%-20s","no");
 
 	// NodeSymbol
-	if(node->token->tokenID >= START_INDEX_OF_NT)
-	{
-		// fprintf(fp2,"%-20s","<");
-		fprintf(fp2,"%-20s\n",enumToString(node->token->tokenID));
-		// fprintf(fp2,"%-20s\n",">");
-	}
-	else
-		fprintf(fp2,"%-20s\n","----");
+	// if(node->token->tokenID >= START_INDEX_OF_NT) // Non-terminal
+	// {
+		fprintf(fp2,"%-20s\n",enumToString2(node->token->tokenID));
+	// }
+	// else
+		// fprintf(fp2,"%-20s\n","----");
 	return;
 }
 // ******************************TO BE COMMENTED*****************************************
@@ -984,7 +840,7 @@ void parseInputSourceCode(FILE* fp)
     						currRoot = currRoot->parent;
     						if(currRoot->parent==NULL)
     						{
-    							printf("Returning from 1\n");
+    							// printf("Returning from 1\n");
     							return;
     						}
     					}
@@ -1005,7 +861,7 @@ void parseInputSourceCode(FILE* fp)
     		}
     		else
     		{
-    			printf("ERROR in PARSING - 1\n");
+    			printf("Rule does not exist\n");
     			// exit(0);
     			return;
     		}
@@ -1071,14 +927,14 @@ void parseInputSourceCode(FILE* fp)
     		{
     			// printf("topOfStack = %s\n", enumToString(topOfStack));
     			// printf("newToken->id = %s\n", enumToString(newToken->tokenID));
-    			printf("ERROR in PARSING - 2\n");
+    			printf("Top of Stack and Lookahead do not match\n");
     			// exit(0);
     			return;
     		}
     	}
     	else if(topOfStack == DOLLAR)
     	{
-    		printf("ERROR in PARSING - 3\n");
+    		printf("Stack empty, content in file still needs to be read\n");
     		// exit(0);
     		return;
     	}
@@ -1088,7 +944,7 @@ void parseInputSourceCode(FILE* fp)
     {
     	// printStack(mainStack);
     	// printf("topOfStack = %s\n", enumToString(topOfStack));
-    	printf("ERROR in PARSING - 4\n");
+    	printf("File completely read but stack is empty\n");
     	// exit(0);
     	return;
     }

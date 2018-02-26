@@ -15,7 +15,8 @@ void decrementBuffer();
 void removeComments(FILE *fp);
 char* tokenRepr(int id);
 // int checkForMaxLength(tokenInfo *t, int ind, long long int lineNo);
-void checkForKeywords(tokenInfo *t);
+// void checkForKeywords(tokenInfo *t);
+void checkForKeywords(int key, tokenInfo *t);
 void copyLexemeToToken(char c, tokenInfo* t, int ind);
 tokenInfo* createToken();
 

@@ -22,17 +22,20 @@ typedef struct rule
 	lexeme *head;
 }rule;
 
+// Structure of nodes that are to be stored in Stack
 typedef struct stackNode
 {
 	int id;
 	struct stackNode* next;
 } stackNode;
 
+// Structure of Stack
 typedef struct stack
 {
 	stackNode* top;
 } stack;
 
+// Structure of Tree
 typedef struct tree
 {
 	tokenInfo* token;

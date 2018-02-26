@@ -45,7 +45,6 @@ void printParseTree(FILE* fp2);
 
 void createHeader(FILE* fp2);
 
-
 // void inOrderTreeTraversal(tree* root);
 // void visitTreeNode(tree* root);
 

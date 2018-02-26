@@ -267,7 +267,7 @@ void removeComments(FILE *fp)
     }
 }    
 
-/*-int getKey(char* lexeme)
+int getKey(char* lexeme)
 {
     int key = 0;
     int i;
@@ -340,9 +340,9 @@ void checkForKeywords(int key, tokenInfo *t)
         return;
     }
 }
-*/
 
-void checkForKeywords(tokenInfo *t)
+
+/*void checkForKeywords(tokenInfo *t)
 {
     if(strcmp(t->lexeme,"_main")==0)
     {
@@ -409,7 +409,7 @@ void checkForKeywords(tokenInfo *t)
         else
             return;
     }
-}
+}*/
 
 void getNextToken(FILE *fp, tokenInfo *t)
 {
@@ -600,7 +600,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         lexemeInd++;
                         break;
                     default:
-                        printf("Line No.: %llu\tLexical Error!! Unknown Symbol <%c>\n", lineNo, c);
+                        printf("Line No.: %-5lluLexical Error!! Unknown Symbol <%c>\n", lineNo, c);
                         return;
                 }
                 break;
@@ -638,7 +638,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -718,7 +718,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -796,7 +796,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         if(maxLengthCrossed==0 && lexemeInd > 20)
                         {
                             maxLengthCrossed = 1;
-                            printf("Line %llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
+                            printf("Line %-5llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
                         }
                         state = 9;
                         break;
@@ -804,8 +804,8 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         decrementBuffer(); // // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
                         t->tokenID = FUNID;
-                        // key = getKey(t->lexeme);
-                        checkForKeywords(t);
+                        key = getKey(t->lexeme);
+                        checkForKeywords(key, t);
                         return;
                 }
                 break;
@@ -873,7 +873,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         if(maxLengthCrossed==0 && lexemeInd > 20)
                         {
                             maxLengthCrossed = 1;
-                            printf("Line %llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
+                            printf("Line %-5llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
                         }
                         state = 10;
                         break;
@@ -896,20 +896,20 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         if(maxLengthCrossed==0 && lexemeInd > 20)
                         {
                             maxLengthCrossed = 1;
-                            printf("Line %llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
+                            printf("Line %-5llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
                         }
                         t->lineNo = lineNo;
                         t->tokenID = ID;
-                        // key = getKey(t->lexeme);
-                        checkForKeywords(t);
+                        key = getKey(t->lexeme);
+                        checkForKeywords(key, t);
 
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
                         t->tokenID = ID;
-                        // key = getKey(t->lexeme);
-                        checkForKeywords(t);
+                        key = getKey(t->lexeme);
+                        checkForKeywords(key, t);
                         return;
                 }
                 break;
@@ -950,7 +950,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -993,7 +993,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         if(maxLengthCrossed==0 && lexemeInd > 20)
                         {
                             maxLengthCrossed = 1;
-                            printf("Line %llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
+                            printf("Line %-5llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
                         }
                         state = 13;
                         break;
@@ -1007,14 +1007,14 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         if(maxLengthCrossed==0 && lexemeInd > 20)
                         {
                             maxLengthCrossed = 1;
-                            printf("Line %llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
+                            printf("Line %-5llu: Lexical error : Identifier is longer than the prescribed length\n", lineNo);
                         }
                         t->lineNo = lineNo;
                         t->tokenID = STR;
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1080,7 +1080,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1106,7 +1106,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1131,7 +1131,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1146,7 +1146,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1161,7 +1161,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1178,7 +1178,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1193,7 +1193,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1210,7 +1210,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1225,7 +1225,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1240,7 +1240,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         break;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
@@ -1257,7 +1257,7 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
-                        printf("Line No.: %llu\t Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
+                        printf("Line No.: %-5llu Lexical Error!!\t Unknown Pattern: <%s%c>\n", lineNo, t->lexeme, c);
                         return;
                 }
                 break;
