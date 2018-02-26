@@ -337,6 +337,15 @@ char* enumToString(int id)
 	return enumString[id];
 }
 
+
+char* enumString2[] = {"ASSIGNOP", "COMMENT", "FUNID", "ID", "NUM", "RNUM", "STR", "END", "INT", "REAL", "STRING", "MATRIX", "MAIN", "SQO", "SQC", "OP", "CL", "SEMICOLON", "COMMA", "IF", "ELSE", "ENDIF", "READ", "PRINT", "FUNCTION", "PLUS", "MINUS", "MUL", "DIV", "SIZE", "AND", "OR", "NOT", "LT", "LE", "EQ", "GT", "GE", "NE", "EPSILON", "ERR", "DOLLAR", "ROOT", "<mainFunction>", "<stmtsAndFunctionDefs>", "<safdLF>", "<stmtOrFunctionDef>", "<stmt>", "<functionDef>", "<parameter_list>", "<type>", "<remainingList>", "<declarationStmt>", "<var_list>", "<more_ids>", "<assignmentStmt_type1>", "<assignmentStmt_type2>", "<leftHandSide_singleVar>", "<leftHandSide_listVar>", "<rightHandSide_type1>", "<rightHandSide_type2>", "<sizeExpression>", "<ifStmt>", "<ifStmtLF>", "<otherStmts>", "<ioStmt>", "<funCallStmt>", "<inputParameterList>", "<listVar>", "<arithmeticExpression>", "<aeLF>", "<arithmeticTerm>", "<atLF>", "<factor>", "<operator_lowPrecedence>", "<operator_highPrecedence>", "<booleanExpression>", "<constrainedVars>", "<var>", "<matrix>", "<rows>", "<rowsLF>", "<row>", "<remainingColElements>", "<matrixElement>", "<logicalOp>", "<relationalOp>"};
+
+int epsilonFlag = 0;
+
+char* enumToString2(int id)
+{
+	return enumString2[id];
+}
 // Structure to store Terminal/Non-Terminal
 /*typedef struct lexeme
 {
@@ -730,12 +739,94 @@ void insertTreeNode(tree* root, tree* node)
 
 void visit(tree* node, FILE* fp2)
 {
-	// if(node->token->tokenID == mainFunction)
-		// printf("ROOT\n");
-	// else	
-		fprintf(fp2,"%s\n", enumToString(node->token->tokenID));
+	// lexemeCurrentNode  lineno token valueIfNumber parentNodeSymbol isLeafNode(yes/no) NodeSymbol
+	
+	// lexemeCurrentNode
+	if(node->token->tokenID < 40)
+		fprintf(fp2,"%-20s", node->token->lexeme);
+	else
+		fprintf(fp2,"%-20s","----");
+
+	// lineNo
+	if(node->token->tokenID < 40)
+		fprintf(fp2,"%-20llu", node->token->lineNo);
+	else
+		fprintf(fp2,"%-20s", "----");
+
+	// token
+	if(node->token->tokenID >= START_INDEX_OF_NT)
+	{
+		// fprintf(fp2,"%-20s","<");
+		fprintf(fp2,"%-30s", enumToString(node->token->tokenID));
+		// fprintf(fp2,"%-20s",">");	
+	}
+	else
+		fprintf(fp2,"%-30s", enumToString(node->token->tokenID));
+
+	// valueIfNumber
+	if(node->token->tokenID == NUM || node->token->tokenID == RNUM)
+		fprintf(fp2,"%-20s",node->token->lexeme);
+	else
+		fprintf(fp2,"%-20s","----");
+
+	// parentNodeSymbol
+	if(node->parent!=NULL)
+	{
+		// fprintf(fp2,"%-20s","<");
+		fprintf(fp2,"%-30s", enumToString(node->parent->token->tokenID));
+		// fprintf(fp2,"%-20s",">");
+	}
+	else
+		fprintf(fp2,"%-30s","ROOT");
+
+	// isLeafNode(yes/no)
+	if(node->token->tokenID < 40)
+		fprintf(fp2,"%-20s","yes");
+	else
+		fprintf(fp2,"%-20s","no");
+
+	// NodeSymbol
+	if(node->token->tokenID >= START_INDEX_OF_NT)
+	{
+		// fprintf(fp2,"%-20s","<");
+		fprintf(fp2,"%-20s\n",enumToString(node->token->tokenID));
+		// fprintf(fp2,"%-20s\n",">");
+	}
+	else
+		fprintf(fp2,"%-20s\n","----");
 	return;
 }
+// ******************************TO BE COMMENTED*****************************************
+/*void visitTreeNode(tree* root)
+{
+	if(root->token->tokenID >= START_INDEX_OF_NT)
+		printf("%s%s%s\n", "<", enumToString(root->token->tokenID), ">");
+	else
+		printf("%s\n", enumToString(root->token->tokenID));
+	return;
+}
+
+void inOrderTreeTraversal(tree* root)
+{
+	// printf("\nEntered inOrderTraversal\n");
+	if(root==NULL)
+		return;
+	// printf("(");
+	inOrderTreeTraversal(root->firstChild);
+	// printf("-");
+
+	visitTreeNode(root);
+	tree* temp2 = root->firstChild;
+	while(temp2!=NULL)
+	{
+		// printf("-");
+		temp2 = temp2->nextSibling;
+		inOrderTreeTraversal(temp2);
+	}
+	// printf(")");
+	return;
+}*/
+// *************************************************************************************
 
 void inOrderTraversal(tree* root, FILE* fp2)
 {
@@ -881,6 +972,8 @@ void parseInputSourceCode(FILE* fp)
     				trNode = createTreeNode(tempToken);
     				// printf("check = %s\n", enumToString(tempToken->tokenID));
     				// printf("parseTree = %s\n",enumToString(parseTree->token->tokenID));
+    				// printf("trNode = %s\n", enumToString(tempToken->tokenID));
+    				// printf("currRoot = %s\n", enumToString(currRoot->token->tokenID));
     				insertTreeNode(currRoot, trNode);
     				// printf("b;a--------------------------\n");
     				// inOrderTraversal(parseTree);
@@ -890,15 +983,22 @@ void parseInputSourceCode(FILE* fp)
     					{
     						currRoot = currRoot->parent;
     						if(currRoot->parent==NULL)
+    						{
+    							printf("Returning from 1\n");
     							return;
+    						}
     					}
+    					currRoot = currRoot->parent->nextSibling;
+    					epsilonFlag = 1;
     				}
-    				
     				stNode = createStackNode(ruleRhs->id);
     				push(auxStack, stNode);
     				ruleRhs = ruleRhs->next;
     			}
-    			currRoot = currRoot->firstChild;
+    			if(epsilonFlag==0)
+    				currRoot = currRoot->firstChild;
+    			else
+    				epsilonFlag = 0;
     			// printStack(auxStack);
     			reverseStack(mainStack, auxStack);
     			// printStack(mainStack);
@@ -943,14 +1043,23 @@ void parseInputSourceCode(FILE* fp)
     				{
     					currRoot = currRoot->parent;
     					if(currRoot->parent==NULL)
-    						return;
+    					{
+    						// printf("Returning from 2\n");
+    						// printf("Main Stack");
+    						// printStack(mainStack);
+    						break;
+    						// return;
+    					}
     				}
-    				currRoot = currRoot->parent->nextSibling;
+    				if(currRoot->parent!=NULL)
+    					currRoot = currRoot->parent->nextSibling;
+    				// printf("YO\n");
     			}
     			// printStack(mainStack);
     			// printf("After 2 = %s\n", enumToString(top(mainStack)));
     			// printf("\n\n");
     			getNextToken(fp, newToken);
+    			// printf("%s\n", enumToString(newToken->tokenID));
     			while(newToken->tokenID == COMMENT)
     			{
 			    	getNextToken(fp,newToken);
@@ -991,6 +1100,17 @@ void parseInputSourceCode(FILE* fp)
     return; 
 }
 
+void createHeader(FILE* fp2)
+{
+	fprintf(fp2,"%-20s","lexemeCurrentnode");
+	fprintf(fp2,"%-20s","lineNo");
+	fprintf(fp2,"%-30s","token");
+	fprintf(fp2,"%-20s","valueIfNumber");
+	fprintf(fp2,"%-30s","parentNodeSymbol");
+	fprintf(fp2,"%-20s","isLeafNode");
+	fprintf(fp2,"%-20s\n","NodeSymbol");
+	return;
+}
 
 // int main(int argc, char* argv[])
 // int main()
@@ -1018,6 +1138,8 @@ void createParseTree(FILE* fp, FILE* fp2)
 	// fclose(fp);
 	// printf("Entering inOrderTraversal\n");
 	// printf("blah = %s\n", enumToString(parseTree->token->tokenID));
+	// inOrderTreeTraversal(parseTree);
+	createHeader(fp2);
 	inOrderTraversal(parseTree, fp2);
 	// fclose(fp2);
 	return;

@@ -207,8 +207,14 @@ void printToken(tokenInfo *t)
     strcpy(lexeme, t->lexeme);
     // strcpy(tokenID,tokenRepr(t->tokenID));
     tokenID = t->tokenID;
-    if(strcmp(lexeme, "")!=0 && maxLengthCrossed==0 || t->tokenID)
-        printf("%s\t%s\tLine-%llu\n", tokenRepr(tokenID), lexeme, t->lineNo);
+    if(strcmp(lexeme, "")!=0 && maxLengthCrossed==0 || t->tokenID==COMMENT)
+    {
+        // printf("%s\t%s\tLine-%llu\n", tokenRepr(tokenID), lexeme, t->lineNo);
+        printf("Line:%-5lld", t->lineNo);
+        printf("%-15s", tokenRepr(tokenID));
+        printf("%-15s\n", lexeme);
+        // printf("%-15s","");
+    }
     return;
 }
 
@@ -261,7 +267,7 @@ void removeComments(FILE *fp)
     }
 }    
 
-int getKey(char* lexeme)
+/*-int getKey(char* lexeme)
 {
     int key = 0;
     int i;
@@ -332,6 +338,76 @@ void checkForKeywords(int key, tokenInfo *t)
                 break;
         }
         return;
+    }
+}
+*/
+
+void checkForKeywords(tokenInfo *t)
+{
+    if(strcmp(t->lexeme,"_main")==0)
+    {
+        t->tokenID = MAIN;
+        return;
+    }
+    else
+    {
+        if(strcmp(t->lexeme,"end")==0)
+        {
+            t->tokenID = END;
+            return;
+        }
+        else if(strcmp(t->lexeme,"int")==0)
+        {
+            t->tokenID = INT;
+            return;
+        }
+        else if(strcmp(t->lexeme,"real")==0)
+        {
+            t->tokenID = REAL;
+            return;
+        }
+        else if(strcmp(t->lexeme,"string")==0)
+        {
+            t->tokenID = STRING;
+            return;
+        }
+        else if(strcmp(t->lexeme,"matrix")==0)
+        {
+            t->tokenID = MATRIX;
+            return;
+        }
+        else if(strcmp(t->lexeme,"if")==0)
+        {
+            t->tokenID = IF;
+            return;
+        }
+        else if(strcmp(t->lexeme,"else")==0)
+        {
+            t->tokenID = ELSE;
+            return;
+        }
+        else if(strcmp(t->lexeme,"endif")==0)
+        {
+            t->tokenID = ENDIF;
+            return;
+        }
+        else if(strcmp(t->lexeme,"read")==0)
+        {
+            t->tokenID = READ;
+            return;
+        }
+        else if(strcmp(t->lexeme,"print")==0)
+        {
+            t->tokenID = PRINT;
+            return;
+        }
+        else if(strcmp(t->lexeme,"function")==0)
+        {
+            t->tokenID = FUNCTION;
+            return;
+        }
+        else
+            return;
     }
 }
 
@@ -727,9 +803,9 @@ void getNextToken(FILE *fp, tokenInfo *t)
                     default: // FUNCTION or MAIN Found
                         decrementBuffer(); // // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
-                        t->tokenID = FUNCTION;
-                        key = getKey(t->lexeme);
-                        checkForKeywords(key, t);
+                        t->tokenID = FUNID;
+                        // key = getKey(t->lexeme);
+                        checkForKeywords(t);
                         return;
                 }
                 break;
@@ -824,16 +900,16 @@ void getNextToken(FILE *fp, tokenInfo *t)
                         }
                         t->lineNo = lineNo;
                         t->tokenID = ID;
-                        key = getKey(t->lexeme);
-                        checkForKeywords(key, t);
+                        // key = getKey(t->lexeme);
+                        checkForKeywords(t);
 
                         return;
                     default:
                         decrementBuffer(); // This character is part of next tokenInfo and needs to be read again
                         t->lineNo = lineNo;
                         t->tokenID = ID;
-                        key = getKey(t->lexeme);
-                        checkForKeywords(key, t);
+                        // key = getKey(t->lexeme);
+                        checkForKeywords(t);
                         return;
                 }
                 break;
